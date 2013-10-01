@@ -29,10 +29,10 @@ module CASClient
                 end
               end
             rescue OpenSSL::SSL::SSLError => err
-              CASClient::Frameworks::Rack::Response.new(nil, nil, "OpenSSL::SSL::SSLError #{err}")
+              CASClient::Frameworks::Rack::Response.new(nil, nil, errors: "OpenSSL::SSL::SSLError #{err}")
             end
 
-            CASClient::Frameworks::Rack::Response.new(nil, nil, "unauthorized!")
+            CASClient::Frameworks::Rack::Response.new(nil, nil, errors: "unauthorized!")
           end
 
           def configure(config)
