@@ -1,3 +1,3 @@
 module CasClient
-  VERSION = "2.3.222"
+  VERSION = "2.3.23"
 end

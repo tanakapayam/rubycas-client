@@ -12,6 +12,7 @@ module CASClient
         def initialize(config={})
           @namespace = config.fetch(:namespace, "cas_ticket_")
           @redis = Redis.new({ host: config[:host], port: config[:port] })
+          @ttl = config.fetch(:ttl, 12.hours)
         end
 
         def redis
@@ -22,12 +23,17 @@ module CASClient
           @namespace + key
         end
 
+        def set(key, value)
+          redis.set(key, value)
+          redis.expire(key, @ttl)
+        end
+
         def store_service_session_lookup(st, controller)
           raise CASException, "No service_ticket specified." unless st
           raise CASException, "No controller specified." unless controller
 
           st = st.ticket if st.kind_of? ServiceTicket
-          redis.set(path_for(st), dump(controller.session.id))
+          set(path_for(st), dump(controller.session.id))
         end
 
         def read_service_session_lookup(st)
@@ -45,14 +51,14 @@ module CASClient
         def save_pgt_iou(pgt_iou, pgt)
           raise CASClient::CASException.new("Invalid pgt_iou") if pgt_iou.nil?
           raise CASClient::CASException.new("Invalid pgt") if pgt.nil?
-          redis.set(path_for(pgt_iou), dump(pgt) )
+          set(path_for(pgt_iou), dump(pgt) )
         end
 
         def retrieve_pgt(pgt_iou)
           raise CASException, "No pgt_iou specified. Cannot retrieve the pgt." unless pgt_iou
           pgt_id = load(redis.get(path_for(pgt_iou)))
           raise CASException, "Invalid pgt_iou specified. Perhaps this pgt has already been retrieved?" unless pgt_id
-          redis.set(path_for(pgt_iou), dump(nil))
+          redis.del(path_for(pgt_iou))
           pgt_id
         end
 
