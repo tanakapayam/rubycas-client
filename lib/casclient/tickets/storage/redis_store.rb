@@ -1,3 +1,4 @@
+require 'activesupport'
 require 'casclient/tickets/storage'
 require 'redis'
 
@@ -11,7 +12,11 @@ module CASClient
 
         def initialize(config={})
           @namespace = config.fetch(:namespace, "cas_ticket_")
-          @redis = Redis.new({ host: config[:host], port: config[:port] })
+          redis_config = config.slice(:url, :scheme, :host, :port, :path, :timeout,
+            :password, :db, :driver, :id, :tcp_keepalive, :reconnect_attempts,
+            :inherit_socket)
+
+          @redis = Redis.new(redis_config)
           @ttl = config.fetch(:ttl, 12.hours).to_i
         end
 
