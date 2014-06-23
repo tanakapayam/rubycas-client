@@ -1,4 +1,4 @@
-require 'activesupport'
+require 'active_support'
 require 'casclient/tickets/storage'
 require 'redis'
 
