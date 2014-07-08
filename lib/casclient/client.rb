@@ -272,10 +272,10 @@ module CASClient
     def submit_data_to_cas(uri, data)
       uri = URI.parse(uri) unless uri.kind_of? URI
       req = Net::HTTP::Post.new(uri.path)
+      req.add_field('X-API-Key', ENV['MASHERY_API_KEY'])
       req.set_form_data(data, ';')
       https = https_connection(uri)
       https.start do |conn|
-        conn['X-API-Key'] = ENV['MASHERY_API_KEY']
         conn.request(req)
       end
     end
