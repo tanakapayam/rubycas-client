@@ -144,6 +144,7 @@ module CASClient
 
       begin
         raw_res = https.start do |conn|
+          conn['X-API-Key'] = ENV['MASHERY_API_KEY']
           conn.get("#{uri.path}?#{uri.query}")
         end
       rescue Errno::ECONNREFUSED => e
@@ -184,7 +185,7 @@ module CASClient
     def request_login_ticket
       uri = URI.parse(login_url+'Ticket')
       https = https_connection(uri)
-      res = https.post(uri.path, ';')
+      res = https.post(uri.path, ';', 'X-API-Key' => ENV['MASHERY_API_KEY'])
 
       raise CASException, res.body unless res.kind_of? Net::HTTPSuccess
 
@@ -246,6 +247,7 @@ module CASClient
       https = https_connection(uri)
       begin
         raw_res = https.start do |conn|
+          conn['X-API-Key'] = ENV['MASHERY_API_KEY']
           conn.get("#{uri.path}?#{uri.query}")
         end
       rescue Errno::ECONNREFUSED => e
@@ -272,7 +274,10 @@ module CASClient
       req = Net::HTTP::Post.new(uri.path)
       req.set_form_data(data, ';')
       https = https_connection(uri)
-      https.start {|conn| conn.request(req) }
+      https.start do |conn|
+        conn['X-API-Key'] = ENV['MASHERY_API_KEY']
+        conn.request(req)
+      end
     end
 
     def query_to_hash(query)
