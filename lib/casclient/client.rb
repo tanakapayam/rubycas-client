@@ -144,8 +144,7 @@ module CASClient
 
       begin
         raw_res = https.start do |conn|
-          conn['X-API-Key'] = ENV['MASHERY_API_KEY']
-          conn.get("#{uri.path}?#{uri.query}")
+          conn.request_get("#{uri.path}?#{uri.query}", 'X-API-Key' => ENV['MASHERY_API_KEY'])
         end
       rescue Errno::ECONNREFUSED => e
         log.warn "CAS server did not respond! (#{e.inspect})"
@@ -247,8 +246,7 @@ module CASClient
       https = https_connection(uri)
       begin
         raw_res = https.start do |conn|
-          conn['X-API-Key'] = ENV['MASHERY_API_KEY']
-          conn.get("#{uri.path}?#{uri.query}")
+          conn.request_get("#{uri.path}?#{uri.query}", 'X-API-Key' => ENV['MASHERY_API_KEY'])
         end
       rescue Errno::ECONNREFUSED => e
         log.error "CAS server did not respond! (#{e.inspect})"
