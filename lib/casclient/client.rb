@@ -242,7 +242,7 @@ module CASClient
     def request_cas_response(uri, type, options={})
       raise "You need to set ENV['MASHERY_API_KEY']" unless ENV['MASHERY_API_KEY']
 
-      log.info "Requesting CAS response for URI #{uri}"
+      log.warn "Requesting CAS response for URI #{uri}"
 
       uri = URI.parse(uri) unless uri.kind_of? URI
       https = https_connection(uri)
