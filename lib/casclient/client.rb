@@ -240,8 +240,6 @@ module CASClient
     # Fetches a CAS response of the given type from the given URI.
     # Type should be either ValidationResponse or ProxyResponse.
     def request_cas_response(uri, type, options={})
-      raise "You need to set ENV['MASHERY_API_KEY']" unless ENV['MASHERY_API_KEY']
-
       log.warn "Requesting CAS response for URI #{uri}"
 
       uri = URI.parse(uri) unless uri.kind_of? URI
