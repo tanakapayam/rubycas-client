@@ -47,7 +47,7 @@ module CASClient
   # will quietly swallow any logging calls.
   class LoggerWrapper
     def initialize(real_logger=nil)
-      set_logger(real_logger)
+      set_real_logger(real_logger)
     end
     # Assign the 'real' Logger instance that this dummy instance wraps around.
     def set_real_logger(real_logger)
