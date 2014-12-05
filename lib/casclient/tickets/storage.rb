@@ -3,6 +3,10 @@ module CASClient
     module Storage
       class AbstractTicketStore
 
+        def initialize(conf = {})
+          log.set_real_logger(conf[:logger]) if conf[:logger]
+        end
+
         attr_accessor :log
         def log
           @log ||= CASClient::LoggerWrapper.new
@@ -79,7 +83,7 @@ module CASClient
         require 'pstore'
 
         def initialize(config={})
-          config ||= {}
+          super
           default_tmp_dir = defined?(Rails.root) ? "#{Rails.root}/tmp" : "#{Dir.pwd}/tmp"
           @tmp_dir = config[:storage_dir] || default_tmp_dir
           @service_session_lookup_dir = config[:service_session_lookup_dir] || "#{@tmp_dir}/sessions"
