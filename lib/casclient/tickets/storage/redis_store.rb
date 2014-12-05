@@ -11,6 +11,7 @@ module CASClient
       class RedisStore < AbstractTicketStore
 
         def initialize(config={})
+          super
           @namespace = config.fetch(:namespace, "cas_ticket_")
           redis_config = config.slice(:url, :scheme, :host, :port, :path, :timeout,
             :password, :db, :driver, :id, :tcp_keepalive, :reconnect_attempts,
@@ -29,13 +30,16 @@ module CASClient
         end
 
         def set(key, value)
+          log.debug("[#{Time.now}] Setting Key \"#{key}\" with \"#{value}\"")
           redis.set(key, value)
           redis.expire(key, @ttl)
         end
 
         def get(key)
+          log.debug("[#{Time.now}] Getting Key \"#{key}\"")
           val = redis.get(key)
           redis.del(key)
+          log.debug("Key Contains \"#{val}\"")
           val
         end
 
